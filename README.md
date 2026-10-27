@@ -1,12 +1,24 @@
 # HELLBOY MOB BEATS
 
-Static website for free untagged WAV beats and custom production consultations.
+Cloudflare Pages website with an R2-backed free WAV library and private upload studio.
 
-## Preview
-Run `python3 -m http.server 5173` from this folder and visit http://localhost:5173. No build step is required.
+## Owner dashboard
+Visit `/admin` after Cloudflare Access configuration. Upload a WAV (up to 90 MB), optional artwork (JPG/PNG/WebP, up to 5 MB), title, BPM, and key. Save a private draft or publish it. The dashboard also supports unpublishing.
 
-## Current status
-Design and navigation are implemented. Custom and project inquiries link to Instagram @hellboymob. Audio uploads, playback, and downloads are not implemented yet.
+## Public library
+Published beats appear on Free Beats with audio controls and WAV downloads. Draft metadata and files are inaccessible to public visitors. Free beats allow unlimited use, commercial releases, and monetization. Custom production inquiries go to @hellboymob for Zoom consultations.
 
-## Hosting
-Deploy this folder as static assets. hellboymob.com is the intended domain; domain connection is pending. The existing private Sites deployment is managed separately; GitHub updates do not automatically deploy there.
+## Runtime configuration
+- R2 binding `BEATS`: private bucket `hellboy-mob-beats-library`.
+- `ADMIN_EMAIL`: allowed owner email.
+- `ACCESS_TEAM_DOMAIN`: Cloudflare Access team hostname, without https://.
+- `ACCESS_AUD`: Access application audience.
+- Protect `hellboymob.com/admin*` and `hellboymob.com/api/admin*` with the same Access application. Only the owner email should be allowed. One-time PIN login is sufficient.
+- Production and alternate Pages hosts independently verify Access JWT signatures, issuer, audience, expiry, and owner email. Missing configuration fails closed.
+- Set Pages Functions to fail closed on usage limits.
+
+## Deployment
+Commits to main deploy through Cloudflare Pages to hellboymob.com. There is no build command; output directory is `.`. `_worker.js` is the server entrypoint; `admin.html` is served only through the authenticated `/admin` route. The original private Sites draft is separate and is not synchronized by this repository.
+
+## Limitations
+No payments; custom fees are negotiated over Zoom. Files remain in storage after unpublishing. Failed or abandoned uploads may leave unused file objects. Downloaded copies cannot be revoked by unpublishing.
