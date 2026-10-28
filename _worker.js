@@ -22,7 +22,7 @@ export default {async fetch(request,env){
  if(!await authorized(request,env))return new Response('Admin sign-in is required. Dashboard access is not configured or your session has expired.',{status:403,headers:{'Cache-Control':'no-store'}});
  if(!['GET','HEAD'].includes(request.method)&&request.headers.get('Origin')!==url.origin)return json({error:'Invalid request origin'},403);
  }
- if(path==='/admin'||path==='/admin/')return env.ASSETS.fetch(new Request(new URL('/admin.html',url),request));
+ if(path==='/admin'||path==='/admin/')return env.ASSETS.fetch(request);
  if(path==='/admin.html')return new Response('Not found',{status:404});
  if(path==='/api/beats'){
  if(request.method!=='GET')return json({error:'Method not allowed'},405);
