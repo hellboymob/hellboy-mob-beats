@@ -22,3 +22,12 @@ Commits to main deploy through Cloudflare Pages to hellboymob.com. There is no b
 
 ## Limitations
 No payments; custom fees are negotiated over Zoom. Files remain in storage after unpublishing. Failed or abandoned uploads may leave unused file objects. Downloaded copies cannot be revoked by unpublishing.
+
+
+## Library organization and community
+- Artist filters: Future, Travis Scott, Juice WRLD, XXXTentacion, Lil Peep, and Other. Untagged existing beats appear in Other. Multiple tags are supported; edit them in `/admin`.
+- Search combines with key root (enharmonic equivalents supported), Major/Minor, and inclusive BPM range. Popularity sorts by likes, then views, then newest.
+- Likes and first-play views are stored in the existing BEATS R2 bucket under `community/`. One like and one view per browser identifier per beat; clearing browser storage resets that identity. These are approximate engagement counts, not verified unique people.
+- Comments use nicknames without accounts. Pending comments are private until approved in `/admin`; hiding a comment is reversible. Plain text rendering, field limits, a honeypot, link rejection, origin checks, and an atomic five-minute cooldown per hashed network address reduce spam. No raw IP address is stored.
+- Comment retrieval returns the latest 100 approved comments. Counts scan paginated R2 object listings, suitable for the current small catalog; migrate counters to a database before high-volume growth.
+- No additional cloud bindings are required. Existing private upload authorization remains in place.
